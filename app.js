@@ -9,8 +9,10 @@ const snakeOutline = '#007202';
 
 // Snakes horizontal velocity
 let dx = 10;
+let foodX;
 // Snakes vertical velocity 
 let dy = 0;
+let foodY;
 
 // Create starting snake position
 let snake = [
@@ -21,8 +23,15 @@ let snake = [
   { x: 160, y: 200 }
 ];
 
+let score = 0;
+
+// True if changing direction
+let changingDirection = false;
+
 // Start Game
 app();
+
+generateFood();
 
 function app() {
   if (gameOver()) return;
@@ -30,9 +39,10 @@ function app() {
   changingDirection = false;
   setTimeout(function onTick() {
     clearCanvas();
+    drawFood();
     drawSnake();
     moveSnake();
-    // Call the app again
+    // Repeats
     app();
   }, 100);
 }
@@ -67,9 +77,22 @@ function drawSnake() {
 
 // Function to move snake
 function moveSnake() {
+  // Creates new snake head
   const snakeHead = { x: snake[0].x + dx, y: snake[0].y + dy };
+  // Adds the new head to the beginning of the body
   snake.unshift(snakeHead);
-  snake.pop();
+  const hasEatenFoods = snake[0].x === foodX && snake[0].y === foodY;
+  if (hasEatenFoods) {
+    // Increase Score
+    score += 10;
+    // Display Score on screen
+    document.getElementById('score').innerHTML = score;
+    // Generate new food location
+    generateFood();
+  } else {
+    // Remove the last part of snake body
+    snake.pop();
+  }
 }
 
 // Change snake direction 
@@ -108,19 +131,45 @@ function changeDirection(e) {
   }
 }
 
+// Create random foods for snake
+function randomfood(min, max) {
+  return Math.round((Math.random() * (max - min) + min) / 10) * 10;
+}
+
+// Generate random foods after eating 
+function generateFood() {
+  foodX = randomfood(0, gameBoard.width - 10);
+  foodY = randomfood(0, gameBoard.height - 10);
+
+  snake.forEach(function snakeAteFood(part) {
+    const hasEaten = part.x == foodX && part.y == foodY;
+    if (hasEaten) generateFood();
+  });
+}
+
+// Actually draw the food on the canvas
+function drawFood() {
+  gameBoardCTX.fillStyle = '#0df9ff';
+  gameBoardCTX.strokeStyle = '#0035a5';
+  gameBoardCTX.fillRect(foodX, foodY, 10, 10);
+  gameBoardCTX.strokeRect(foodX, foodY, 10, 10);
+}
+
 // Check for game over
 function gameOver() {
   // For loop to check if snake has collided into itself
   for (let i = 4; i < snake.length; i++) {
-    const collided = snake[i].x === snake[0].x && snake[i].y === snake[0].y;
-    // If snake crashes into itself then game over
-    if (collided) return true;
+    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+      // If snake crashes into itself then game over
+      return true;
+    };
   }
 
   const crashLeftWall = snake[0].x < 0;
   const crashRightWall = snake[0].x > gameBoard.width - 10;
   const crashTopWall = snake[0].y < 0;
   const crashBottomWall = snake[0].y > gameBoard.height - 10;
+
   return crashLeftWall || crashRightWall || crashTopWall || crashBottomWall;
 }
 
