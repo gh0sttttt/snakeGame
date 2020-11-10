@@ -1,5 +1,15 @@
+const rulesBtn = document.getElementById('rulesBtn');
+const closeBtn = document.getElementById('closeBtn');
+const startBtn = document.getElementById('startBtn');
+const rules = document.getElementById('rules');
+const gameTitle = document.getElementById('gameTitle');
+// const replayBtn = document.getElementById('replayBtn');
+
 const gameBoard = document.getElementById('gameCanvas');
 const gameBoardCTX = gameBoard.getContext('2d');
+
+// Init Score
+let score = 0;
 
 // Define elements
 const border = '#000';
@@ -14,7 +24,7 @@ let foodX;
 let dy = 0;
 let foodY;
 
-// Create starting snake position
+// Create snake props
 let snake = [
   { x: 200, y: 200 },
   { x: 190, y: 200 },
@@ -23,29 +33,9 @@ let snake = [
   { x: 160, y: 200 }
 ];
 
-let score = 0;
-
 // True if changing direction
 let changingDirection = false;
 
-// Start Game
-app();
-
-generateFood();
-
-function app() {
-  if (gameOver()) return;
-
-  changingDirection = false;
-  setTimeout(function onTick() {
-    clearCanvas();
-    drawFood();
-    drawSnake();
-    moveSnake();
-    // Repeats
-    app();
-  }, 100);
-}
 
 function clearCanvas() {
   // Define background color of game canvas
@@ -164,16 +154,40 @@ function gameOver() {
       return true;
     };
   }
-
   const crashLeftWall = snake[0].x < 0;
   const crashRightWall = snake[0].x > gameBoard.width - 10;
   const crashTopWall = snake[0].y < 0;
   const crashBottomWall = snake[0].y > gameBoard.height - 10;
 
-  return crashLeftWall || crashRightWall || crashTopWall || crashBottomWall;
+  if (crashLeftWall || crashRightWall || crashTopWall || crashBottomWall) return true;
 }
 
 // Event Listeners 
-
 document.addEventListener('keydown', changeDirection);
+
+rulesBtn.addEventListener('click', () => rules.classList.add('show'));
+closeBtn.addEventListener('click', () => rules.classList.remove('show'));
+
+// Start Game
+clearCanvas();
+drawSnake();
+generateFood();
+
+startBtn.addEventListener('click', function app() {
+  if (gameOver()) {
+    gameTitle.innerHTML = 'Game Over!!';
+    return;
+  };
+
+  changingDirection = false;
+  setTimeout(function onTick() {
+    clearCanvas();
+    drawFood();
+    drawSnake();
+    moveSnake();
+    // Repeats
+    app();
+  }, 100);
+});
+
 

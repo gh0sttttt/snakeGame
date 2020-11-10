@@ -9,8 +9,22 @@
 </head>
 
 <body>
-  <div id="score">0</div>
+  <h1 id="gameTitle">Snake !</h1>
+  <button id="rulesBtn" class="btn rulesBtn">Show Rules</button>
+  <div id="rules" class="rules">
+    <h2>How to Play:</h2>
+    <p>Use your arrow keys to move the snake and try to eat as much food as
+      possible!</p>
+    <p>If you crash into the walls or yourself, Game Over!</p>
+    <button id="closeBtn" class="btn">Close</button>
+  </div>
+  <div id="startgame">
+    <button id="startBtn" class="btn">Start Game</button>
+    <!-- To Do -- add Replay -->
+    <!-- <button id="replayBtn" class="btn">Replay</button> -->
+  </div>
   <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="score">Score: 0</div>
   <script src="app.js"></script>
 </body>
 
