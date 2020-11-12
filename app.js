@@ -1,6 +1,7 @@
 const rulesBtn = document.getElementById('rulesBtn');
 const closeBtn = document.getElementById('closeBtn');
 const startBtn = document.getElementById('startBtn');
+const resetBtn = document.getElementById('resetBtn');
 const rules = document.getElementById('rules');
 const gameTitle = document.getElementById('gameTitle');
 // const replayBtn = document.getElementById('replayBtn');
@@ -161,6 +162,10 @@ function gameOver() {
 
   if (crashLeftWall || crashRightWall || crashTopWall || crashBottomWall) return true;
 }
+// Start Game
+clearCanvas();
+drawSnake();
+generateFood();
 
 // Event Listeners 
 document.addEventListener('keydown', changeDirection);
@@ -168,19 +173,14 @@ document.addEventListener('keydown', changeDirection);
 rulesBtn.addEventListener('click', () => rules.classList.add('show'));
 closeBtn.addEventListener('click', () => rules.classList.remove('show'));
 
-// Start Game
-clearCanvas();
-drawSnake();
-generateFood();
-
-startBtn.addEventListener('click', function app() {
+startBtn.addEventListener('click', app = () => {
   if (gameOver()) {
     gameTitle.innerHTML = 'Game Over!!';
     return;
   };
 
   changingDirection = false;
-  setTimeout(function onTick() {
+  setTimeout(onTick = () => {
     clearCanvas();
     drawFood();
     drawSnake();
@@ -188,6 +188,23 @@ startBtn.addEventListener('click', function app() {
     // Repeats
     app();
   }, 100);
+});
+
+resetBtn.addEventListener('click', () => {
+  if (!gameOver()) return;
+  gameTitle.innerHTML = 'Snake !';
+  score = 0;
+  snake = [
+    { x: 200, y: 200 },
+    { x: 190, y: 200 },
+    { x: 180, y: 200 },
+    { x: 170, y: 200 },
+    { x: 160, y: 200 }
+  ];
+
+  clearCanvas();
+  generateFood();
+  drawSnake();
 });
 
 
